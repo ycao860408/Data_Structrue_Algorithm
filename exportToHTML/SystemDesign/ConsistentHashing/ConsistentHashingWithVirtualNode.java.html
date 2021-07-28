@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>ConsistentHashingWithVirtualNode.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConsistentHashingWithVirtualNode.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">SystemDesign.ConsistentHashing</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.Map</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.TreeMap</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">ConsistentHashingWithVirtualNode </span><span class="s0">implements </span><span class="s1">LoadBalancer{</span>
+    <span class="s0">private </span><span class="s1">TreeMap&lt;Integer</span><span class="s0">, </span><span class="s1">String&gt; treeMapHash</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">ConsistentHashingWithVirtualNode() {</span>
+        <span class="s0">this</span><span class="s1">.treeMapHash =  </span><span class="s0">new </span><span class="s1">TreeMap&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">addServerNode(String serverNodeName) {</span>
+        <span class="s0">int </span><span class="s1">hash = </span><span class="s0">new </span><span class="s1">GetHashCode().getHashCode(serverNodeName)</span><span class="s0">;</span>
+        <span class="s1">treeMapHash.put(hash</span><span class="s0">, </span><span class="s1">serverNodeName)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">deleteServerNode(String serverNodeName) {</span>
+        <span class="s0">int </span><span class="s1">hash = </span><span class="s0">new </span><span class="s1">GetHashCode().getHashCode(serverNodeName)</span><span class="s0">;</span>
+        <span class="s1">treeMapHash.remove(hash)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">String selectServerNode(String requestURL) {</span>
+        <span class="s0">int </span><span class="s1">hash = </span><span class="s0">new </span><span class="s1">GetHashCode().getHashCode(requestURL)</span><span class="s0">;</span>
+        <span class="s1">Map.Entry&lt;Integer</span><span class="s0">, </span><span class="s1">String&gt; subEntry = treeMapHash.ceilingEntry(hash)</span><span class="s0">;</span>
+        <span class="s1">subEntry = subEntry== </span><span class="s0">null </span><span class="s1">? treeMapHash.firstEntry() : subEntry</span><span class="s0">;</span>
+        <span class="s1">String VNNode = subEntry.getValue()</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">VNNode.substring(</span><span class="s2">0</span><span class="s0">, </span><span class="s1">VNNode.indexOf(</span><span class="s3">&quot;&amp;&amp;&quot;</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
